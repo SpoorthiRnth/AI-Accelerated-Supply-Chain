@@ -1,0 +1,16 @@
+Project Structure
+
+
+supply_chain_ai/
+├── config.py # Azure credentials + thresholds
+├── base_agent.py # Shared LLM client, logging, output formatting
+├── main.py # Production pipeline (real GPT-5 API calls)
+├── run_demo.py # Offline demo — no API key required
+├── requirements.txt
+├── synthetic_data/
+│   └── generator.py # 13 datasets, seed=42 for reproducibility
+├── zone0_pre_ingestion/agents.py # Agents 1, 2, 3
+├── zone1_processing/agents.py # Agents 4, 5, 6
+├── zone2_gold/agents.py # Agents 7, 8, 9
+├── zone3_reporting/agents.py # Agents 10, 11, 12
+└── outputs/ # JSON output per agent per run
