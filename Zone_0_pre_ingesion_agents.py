@@ -36,21 +36,21 @@ class DocumentAgent(BaseAgent):
             self._print_section(f"Extracting: {doc.get('document_type')} — {doc.get('retailer_name', doc.get('supplier_id', ''))}")
 
             system_prompt = """You are a supply chain document extraction agent.
-Your job is to validate and normalize extracted document data into clean structured records.
-Respond ONLY with a valid JSON object. No extra text."""
+                Your job is to validate and normalize extracted document data into clean structured records.
+                Respond ONLY with a valid JSON object. No extra text."""
 
             user_prompt = f"""
-Validate and normalize the following supply chain document data.
-Return a JSON object with:
-- "normalized_record": the cleaned and validated data dict
-- "extraction_quality": score 0-100
-- "fields_extracted": count of non-null fields
-- "issues_found": list of any data quality issues noticed
-- "document_category": one of [retailer_scorecard, supplier_invoice, finance_report]
+                Validate and normalize the following supply chain document data.
+                Return a JSON object with:
+                - "normalized_record": the cleaned and validated data dict
+                - "extraction_quality": score 0-100
+                - "fields_extracted": count of non-null fields
+                - "issues_found": list of any data quality issues noticed
+                - "document_category": one of [retailer_scorecard, supplier_invoice, finance_report]
 
-Raw document data:
-{json.dumps(doc, indent=2)}
-"""
+                Raw document data:
+                {json.dumps(doc, indent=2)}
+                """
             response_text = self.call_llm(system_prompt, user_prompt)
             try:
                 parsed = json.loads(response_text)
@@ -186,18 +186,18 @@ class DataQualityGateAgent(BaseAgent):
 Respond ONLY with a valid JSON object."""
 
         user_prompt = f"""
-Analyze this Data Quality Gate summary and respond with JSON:
-{{
-  "overall_health": "Good/Fair/Poor",
-  "overall_health_score": <0-100>,
-  "critical_issues": [list of critical issues],
-  "recommended_actions": [list of actions],
-  "narrative": "2-3 sentence executive summary"
-}}
+            Analyze this Data Quality Gate summary and respond with JSON:
+            {{
+            "overall_health": "Good/Fair/Poor",
+            "overall_health_score": <0-100>,
+            "critical_issues": [list of critical issues],
+            "recommended_actions": [list of actions],
+            "narrative": "2-3 sentence executive summary"
+            }}
 
-DQ Summary:
-{json.dumps(dq_summary, indent=2)}
-"""
+            DQ Summary:
+            {json.dumps(dq_summary, indent=2)}
+            """
         llm_response = self.call_llm(system_prompt, user_prompt)
         try:
             llm_analysis = json.loads(llm_response)
@@ -311,20 +311,20 @@ class SourceAnomalyDetectionAgent(BaseAgent):
 Respond ONLY with a valid JSON object."""
 
         user_prompt = f"""
-Analyze the following feed anomalies and risk events.
-Return JSON with:
-{{
-  "overall_feed_health": "Healthy/Degraded/Critical",
-  "high_priority_actions": [list of immediate actions needed],
-  "risk_exposure_summary": "1-2 sentences on total risk exposure",
-  "affected_shipment_count": <number>,
-  "estimated_financial_exposure_usd": <number>
-}}
+            Analyze the following feed anomalies and risk events.
+            Return JSON with:
+            {{
+            "overall_feed_health": "Healthy/Degraded/Critical",
+            "high_priority_actions": [list of immediate actions needed],
+            "risk_exposure_summary": "1-2 sentences on total risk exposure",
+            "affected_shipment_count": <number>,
+            "estimated_financial_exposure_usd": <number>
+            }}
 
-Feed Anomalies: {json.dumps(anomalies, indent=2)}
-Active Risk Events: {json.dumps([e for e in risk_events if e.get('active')], indent=2)}
-Shipments tagged with risk: {tagged_count}
-"""
+            Feed Anomalies: {json.dumps(anomalies, indent=2)}
+            Active Risk Events: {json.dumps([e for e in risk_events if e.get('active')], indent=2)}
+            Shipments tagged with risk: {tagged_count}
+            """
         llm_response = self.call_llm(system_prompt, user_prompt)
         try:
             llm_analysis = json.loads(llm_response)
